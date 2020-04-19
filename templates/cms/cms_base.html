@@ -6,8 +6,8 @@
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
     {% include 'common/_heads.html' %}
-    <link rel="stylesheet" href="{{ static('cms/css/base.css') }}">
-    <script src="{{ static('cms/js/base.js') }}"></script>
+    <link rel="stylesheet" href="{{ static('cms/css/cms_base.css') }}">
+    <script src="{{ static('cms/js/cms_base.js') }}"></script>
     {% block head %}{% endblock %}
 </head>
 <body>
@@ -49,25 +49,16 @@
                         <li><a href="{{ url_for('cms.resetemail') }}">修改邮箱</a></li>
                     </ul>
                 </li>
-                {% set cms_user = g.cms_user %}
-                <li class="nav-group banners-manage"><a href="{{ url_for("cms.banners") }}">轮播图管理</a></li>
-                {% if cms_user.has_permission(CMSPermission.POSTER) %}
-                    <li class="nav-group post-manage"><a href="{{ url_for('cms.posts') }}">帖子管理</a></li>
+                {% set teacher = g.teacher %}
+                <li class="nav-group banner-manage"><a href="{{ url_for("cms.banners") }}">轮播图管理</a></li>
+                <li class="board-manage"><a href="{{ url_for('cms.boards') }}">板块管理</a></li>
+                <li class="nav-group course-manage"><a href="{{ url_for('cms.courses') }}">课程管理</a></li>
+                <li class="comment-manage"><a href="{{ url_for('cms.comments') }}">评论管理</a></li>
+                {% if teacher.is_developer %}
+                    <li class="nav-group teacher-manage"><a href="{{ url_for('cms.teacher') }}">教师管理</a></li>
                 {% endif %}
-                {% if cms_user.has_permission(CMSPermission.COMMENTER) %}
-                    <li class="comments-manage"><a href="{{ url_for('cms.comments') }}">评论管理</a></li>
-                {% endif %}
-                {% if cms_user.has_permission(CMSPermission.BOARDER) %}
-                    <li class="board-manage"><a href="{{ url_for('cms.boards') }}">板块管理</a></li>
-                {% endif %}
-                {% if cms_user.has_permission(CMSPermission.FRONTUSER) %}
-                    <li class="nav-group user-manage"><a href="{{ url_for('cms.fusers') }}">前台用户管理</a></li>
-                {% endif %}
-                {% if cms_user.has_permission(CMSPermission.CMSUSER) %}
-                    <li class="nav-group cmsuser-manage"><a href="{{ url_for('cms.cusers') }}">CMS用户管理</a></li>
-                {% endif %}
-                {% if cms_user.is_developer %}
-                    <li class="cmsrole-manage"><a href="{{ url_for('cms.croles') }}">CMS组管理</a></li>
+                {% if teacher.is_developer %}
+                    <li class="student-manage"><a href="{{ url_for('cms.student') }}">学生管理</a></li>
                 {% endif %}
             </ul>
         </div>

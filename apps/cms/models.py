@@ -10,6 +10,7 @@ class Teacher(db.Model):
     _password = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(50), nullable=False, unique=True)
     join_time = db.Column(db.DateTime, default=datetime.now)
+    role = db.Column(db.Integer,default=0)
 
     # 外界访问方法和访问这个属性是一模一样的
     @property
@@ -23,3 +24,7 @@ class Teacher(db.Model):
     def check_password(self, raw_password):
         result = check_password_hash(self.password, raw_password)
         return result
+
+    @property
+    def is_developer(self):
+        return self.role==1;
