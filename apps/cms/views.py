@@ -3,9 +3,10 @@ from flask_mail import Message
 from exts import db,mail
 from  utils import restful,zlcache
 import config,string,random
-from .forms import SigninForm, SignupForm, ResetpwdForm, ResetEmailForm
+from .forms import SigninForm, SignupForm, ResetpwdForm, ResetEmailForm,AddBannerForm, UpdateBannerForm, AddBoardForm,UpdateBoardForm
 from .models import Teacher
 from .decorators import login_required
+from ..models import Banner,Board,Course,Comment
 
 bp = Blueprint("cms", __name__, url_prefix='/cms')
 
@@ -50,16 +51,126 @@ def email_captcha():
     return restful.success()
 
 
-@bp.route('/banners/')
+@bp.route('banners')
 @login_required
 def banners():
-    return render_template('cms/cms_banners.html')
+    banners = Banner.query.order_by(Banner.priority.desc()).all()
+    return render_template('cms/cms_banners.html', banners=banners)
+
+
+@bp.route('/abanner/', methods=['POST'])
+@login_required
+def abanner():
+    form = AddBannerForm(request.form)
+    if form.validate():
+        name = form.name.data
+        image_url = form.image_url.data
+        link_url = form.link_url.data
+        priority = form.priority.data
+        banner = Banner(name=name, image_url=image_url, link_url=link_url, priority=priority)
+        db.session.add(banner)
+        db.session.commit()
+        return restful.success()
+
+
+@bp.route('/ubanner/', methods=['POST'])
+@login_required
+def ubanner():
+    form = UpdateBannerForm(request.form)
+    if form.validate():
+        banner_id = form.banner_id.data
+        name = form.name.data
+        image_url = form.image_url.data
+        link_url = form.link_url.data
+        priority = form.priority.data
+        banner = Banner.query.get(banner_id)
+        if banner:
+            banner.name = name
+            banner.image_url = image_url
+            banner.link_url = link_url
+            banner.priority = priority
+            db.session.commit()
+            return restful.success()
+        else:
+            return restful.params_error(message='没有这个轮播图！')
+    else:
+        return restful.params_error(message=form.get_error())
+
+
+@bp.route('/dbanner/', methods=['POST'])
+@login_required
+def dbanner():
+    banner_id = request.form.get('banner_id')
+    if not banner_id:
+        return restful.params_error(message='请传入轮播图id！')
+
+    banner = Banner.query.get(banner_id)
+    if not banner:
+        return restful.params_error(message='没有这个轮播图！')
+
+    db.session.delete(banner)
+    db.session.commit()
+    return restful.success()
+
 
 
 @bp.route('/boards/')
 @login_required
 def boards():
-    return render_template('cms/cms_boards.html')
+    board_models = Board.query.all()
+    context = {
+        'boards': board_models
+    }
+    return render_template('cms/cms_boards.html', **context)
+
+
+@bp.route('/aboard/', methods=['POST'])
+@login_required
+def aboard():
+    form = AddBoardForm(request.form)
+    if form.validate():
+        name = form.name.data
+        name = form.name.data
+        board = Board(name=name)
+        db.session.add(board)
+        db.session.commit()
+        return restful.success()
+    else:
+        return restful.params_error(message=form.get_error())
+
+
+@bp.route('/uboard/', methods=['POST'])
+@login_required
+def uboard():
+    form = UpdateBoardForm(request.form)
+    if form.validate():
+        board_id = form.board_id.data
+        name = form.name.data
+        board = Board.query.get(board_id)
+        if board:
+            board.name = name
+            db.session.commit()
+            return restful.success()
+        else:
+            return restful.params_error(message='没有这个板块！')
+    else:
+        return restful.params_error(message=form.get_error())
+
+
+@bp.route('/dboard/', methods=['POST'])
+@login_required
+def dboard():
+    board_id = request.form.get("board_id")
+    if not board_id:
+        return restful.params_error('请传入板块id！')
+
+    board = Board.query.get(board_id)
+    if not board:
+        return restful.params_error(message='没有这个板块！')
+
+    db.session.delete(board)
+    db.session.commit()
+    return restful.success()
 
 
 @bp.route('/courses/')
