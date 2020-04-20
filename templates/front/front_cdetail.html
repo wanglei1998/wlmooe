@@ -1,0 +1,17 @@
+{% extends 'front/front_base.html' %}
+{% from "common/_macros.html" import static %}
+
+{% block title %}
+    {{ post.title }}
+{% endblock %}
+
+{% block head %}
+    <script src="{{ static('ueditor/ueditor.config.js') }}"></script>
+    <script src="{{ static('ueditor/ueditor.all.min.js') }}"></script>
+    <script src="{{ static('front/js/front_cdetail.js') }}"></script>
+    <link rel="stylesheet" href="{{ static('front/css/front_cdetail.css') }}">
+{% endblock %}
+
+{% block body %}
+课程内容
+{% endblock %}

@@ -21,9 +21,8 @@ class Board(db.Model):
 class Course(db.Model):
     __tablename__ = 'course'
     id = db.Column(db.Integer,primary_key=True,autoincrement=True)
-    name = db.Column(db.String(200),nullable=False)
-    text = db.Column(db.Text,nullable=False)
-    video_url = db.Column(db.String(255), nullable=False)
+    title = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.Text, nullable=False)
     create_time = db.Column(db.DateTime,default=datetime.now)
     board_id = db.Column(db.Integer,db.ForeignKey("board.id"),nullable=False)
     author_id = db.Column(db.Integer,db.ForeignKey("teacher.id"),nullable=False)

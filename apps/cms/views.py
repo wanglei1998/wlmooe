@@ -3,7 +3,7 @@ from flask_mail import Message
 from exts import db,mail
 from  utils import restful,zlcache
 import config,string,random
-from .forms import SigninForm, SignupForm, ResetpwdForm, ResetEmailForm,AddBannerForm, UpdateBannerForm, AddBoardForm,UpdateBoardForm
+from .forms import SigninForm, SignupForm, ResetpwdForm, ResetEmailForm,AddBannerForm, UpdateBannerForm, AddBoardForm,UpdateBoardForm, AddCourseForm
 from .models import Teacher
 from .decorators import login_required
 from ..models import Banner,Board,Course,Comment
@@ -177,6 +177,30 @@ def dboard():
 @login_required
 def courses():
     return render_template('cms/cms_courses.html')
+
+@bp.route('/acourse/',methods=['GET','POST'])
+@login_required
+def acourse():
+    if request.method == 'GET':
+        boards = Board.query.all()
+        return render_template('cms/cms_acourse.html',boards=boards)
+    else:
+        form = AddCourseForm(request.form)
+        if form.validate():
+            title = form.title.data
+            content = form.content.data
+            board_id = form.board_id.data
+            board = Board.query.get(board_id)
+            if not board:
+                return restful.params_error(message='没有这个板块！')
+            course = Course(title=title,content=content)
+            course.board = board
+            course.author = g.teacher
+            db.session.add(course)
+            db.session.commit()
+            return restful.success()
+        else:
+            return restful.params_error(message=form.get_error())
 
 
 @bp.route('/comments/')
