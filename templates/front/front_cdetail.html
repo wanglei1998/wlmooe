@@ -2,7 +2,7 @@
 {% from "common/_macros.html" import static %}
 
 {% block title %}
-    {{ post.title }}
+    {{ course.title }}
 {% endblock %}
 
 {% block head %}
@@ -13,5 +13,48 @@
 {% endblock %}
 
 {% block body %}
-课程内容
+ <div class="lg-container">
+        <div class="course-container">
+            <h2>{{ course.title }}</h2>
+            <p class="course-info-group">
+                <span>发表时间：{{ course.create_time }}</span>
+                <span>作者：{{ course.author.username }}</span>
+                <span>所属板块：{{ course.board.name }}</span>
+                <span>阅读数：{{ course.read_count }}</span>
+                <span>评论数：0</span>
+            </p>
+            <article class="course-content" id="course-content" data-id="{{ course.id }}">
+                {{ course.content|safe }}
+            </article>
+        </div>
+        <div class="comment-group">
+            <h3>评论列表</h3>
+            <ul class="comment-list-group">
+                {% for comment in course.comments %}
+                    <li>
+                        <div class="avatar-group">
+                            <img src="{{ comment.author.avatar or static('common/images/logo.png') }}" alt="">
+                        </div>
+                        <div class="comment-content">
+                            <p class="author-info">
+                                <span>{{ comment.author.username }}</span>
+                                <span>{{ comment.create_time }}</span>
+                            </p>
+                            <p class="comment-txt">
+                                {{ comment.content|safe }}
+                            </p>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="add-comment-group">
+            <h3>发表评论</h3>
+            <script id="editor" type="text/plain" style="height:100px;"></script>
+            <div class="comment-btn-group">
+                <button class="btn btn-primary" id="comment-btn">发表评论</button>
+            </div>
+        </div>
+    </div>
+    <div class="sm-container"></div>
 {% endblock %}

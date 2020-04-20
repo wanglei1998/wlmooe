@@ -33,12 +33,12 @@ $(function () {
             window.location = '/signin/';
         }else{
             var content = window.ue.getContent();
-            var post_id = $("#post-content").attr("data-id");
+            var course_id = $("#course-content").attr("data-id");
             zlajax.post({
                 'url': '/acomment/',
                 'data':{
                     'content': content,
-                    'post_id': post_id
+                    'course_id': course_id
                 },
                 'success': function (data) {
                     if(data['code'] == 200){

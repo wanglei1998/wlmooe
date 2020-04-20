@@ -1,12 +1,13 @@
-from flask import Blueprint,views,request,render_template,session,abort
+from flask import Blueprint,views,request,render_template,session,abort,g
 from flask_paginate import Pagination,get_page_parameter
 from sqlalchemy import func
 from exts import db
 from utils import restful
 import config
-from .forms import SignupForm,SigninForm
+from .forms import SignupForm,SigninForm,AddCommentForm
 from .models import Student
 from ..models import Banner,Board,Course,Comment
+from .decorators import login_required
 
 
 bp = Blueprint("front", __name__)
@@ -61,8 +62,28 @@ def course_detail(course_id):
     course = Course.query.get(course_id)
     if not course:
         abort(404)
-    return render_template('front/front_pdetail.html',course=course)
+    return render_template('front/front_cdetail.html',course=course)
 
+
+@bp.route('/acomment/',methods=['POST'])
+@login_required
+def add_comment():
+    form = AddCommentForm(request.form)
+    if form.validate():
+        content = form.content.data
+        course_id = form.course_id.data
+        course = Course.query.get(course_id)
+        if course:
+            comment = Comment(content=content)
+            comment.course = course
+            comment.author = g.student
+            db.session.add(comment)
+            db.session.commit()
+            return restful.success()
+        else:
+            return restful.params_error('没有这门课程！')
+    else:
+        return restful.params_error(form.get_error())
 
 class SignupView(views.MethodView):
     def get(self):

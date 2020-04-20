@@ -1,12 +1,13 @@
 from flask import Blueprint, views, render_template, request, session, redirect, url_for, g, jsonify
 from flask_mail import Message
-from exts import db,mail
-from  utils import restful,zlcache
-import config,string,random
-from .forms import SigninForm, SignupForm, ResetpwdForm, ResetEmailForm,AddBannerForm, UpdateBannerForm, AddBoardForm,UpdateBoardForm, AddCourseForm
+from exts import db, mail
+from  utils import restful, zlcache
+import config, string, random
+from .forms import SigninForm, SignupForm, ResetpwdForm, ResetEmailForm, AddBannerForm, UpdateBannerForm, AddBoardForm, \
+    UpdateBoardForm, AddCourseForm
 from .models import Teacher
 from .decorators import login_required
-from ..models import Banner,Board,Course,Comment
+from ..models import Banner, Board, Course, Comment
 
 bp = Blueprint("cms", __name__, url_prefix='/cms')
 
@@ -113,7 +114,6 @@ def dbanner():
     return restful.success()
 
 
-
 @bp.route('/boards/')
 @login_required
 def boards():
@@ -176,14 +176,19 @@ def dboard():
 @bp.route('/courses/')
 @login_required
 def courses():
-    return render_template('cms/cms_courses.html')
+    course_model = Course.query.all()
+    context = {
+        'courses': course_model
+    }
+    return render_template('cms/cms_courses.html', **context)
 
-@bp.route('/acourse/',methods=['GET','POST'])
+
+@bp.route('/acourse/', methods=['GET', 'POST'])
 @login_required
 def acourse():
     if request.method == 'GET':
         boards = Board.query.all()
-        return render_template('cms/cms_acourse.html',boards=boards)
+        return render_template('cms/cms_acourse.html', boards=boards)
     else:
         form = AddCourseForm(request.form)
         if form.validate():
@@ -193,7 +198,7 @@ def acourse():
             board = Board.query.get(board_id)
             if not board:
                 return restful.params_error(message='没有这个板块！')
-            course = Course(title=title,content=content)
+            course = Course(title=title, content=content)
             course.board = board
             course.author = g.teacher
             db.session.add(course)
@@ -219,8 +224,6 @@ def teacher():
 @login_required
 def student():
     return render_template('cms/cms_student.html')
-
-
 
 
 class SignupView(views.MethodView):
