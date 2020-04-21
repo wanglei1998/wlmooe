@@ -44,7 +44,11 @@ ALIDAYU_SIGN_NAME = '小饭桌应用'
 ALIDAYU_TEMPLATE_CODE = 'SMS_68465012'
 
 # UEditor的相关配置
-UEDITOR_UPLOAD_TO_QINIU = True
+# 这是讲文件上传到本地服务器的images下
+# config所在的路径os.path.dirname(__file__)
+UEDITOR_UPLOAD_PATH = os.path.join(os.path.dirname(__file__), 'images')
+# 这是配置的上传到七牛的, 你配置了这个那么文件就会直接上传到七牛
+UEDITOR_UPLOAD_TO_QINIU = False
 UEDITOR_QINIU_ACCESS_KEY = "fOsvSI_ByPLM_g5ueTBcRfkpX-UjgNs2tJzsbCev"
 UEDITOR_QINIU_SECRET_KEY = "b8VMy-_qxHFWDl7zSMunteWhaF9jELvjM9SdHN7S"
 UEDITOR_QINIU_BUCKET_NAME = "wanglei1998"

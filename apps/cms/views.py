@@ -3,8 +3,7 @@ from flask_mail import Message
 from exts import db, mail
 from  utils import restful, zlcache
 import config, string, random
-from .forms import SigninForm, SignupForm, ResetpwdForm, ResetEmailForm, AddBannerForm, UpdateBannerForm, AddBoardForm, \
-    UpdateBoardForm, AddCourseForm
+from .forms import SigninForm, SignupForm, ResetpwdForm, ResetEmailForm, AddBannerForm, UpdateBannerForm, AddBoardForm, UpdateBoardForm, AddCourseForm
 from .models import Teacher
 from .decorators import login_required
 from ..models import Banner, Board, Course, Comment
@@ -207,11 +206,45 @@ def acourse():
         else:
             return restful.params_error(message=form.get_error())
 
+@bp.route('/dcourse/', methods=['POST'])
+@login_required
+def dcourse():
+    course_id = request.form.get("course_id")
+    if not course_id:
+        return restful.params_error('请传入课程id！')
+
+    course = Course.query.get(course_id)
+    if not course:
+        return restful.params_error(message='没有这门课程！')
+
+    db.session.delete(course)
+    db.session.commit()
+    return restful.success()
+
+
 
 @bp.route('/comments/')
 @login_required
 def comments():
-    return render_template('cms/cms_comments.html')
+    comment_model= Comment.query.all()
+    context = {
+        'comments': comment_model
+    }
+    return render_template('cms/cms_comments.html', **context)
+
+@bp.route('/dcomment/', methods=['POST'])
+@login_required
+def dcomment():
+    comment_id = request.form.get("comment_id")
+    if not comment_id:
+        return restful.params_error('请传入评论id！')
+    comment = Comment.query.get(comment_id)
+    if not comment:
+        return restful.params_error(message='没有这条评论！')
+
+    db.session.delete(comment)
+    db.session.commit()
+    return restful.success()
 
 
 @bp.route('/teacher/')

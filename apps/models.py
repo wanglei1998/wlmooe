@@ -26,7 +26,6 @@ class Course(db.Model):
     create_time = db.Column(db.DateTime,default=datetime.now)
     board_id = db.Column(db.Integer,db.ForeignKey("board.id"),nullable=False)
     author_id = db.Column(db.Integer,db.ForeignKey("teacher.id"),nullable=False)
-
     board = db.relationship("Board",backref="courses")
     author = db.relationship("Teacher",backref='courses')
 
