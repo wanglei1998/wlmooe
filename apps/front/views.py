@@ -4,9 +4,9 @@ from sqlalchemy import func
 from exts import db
 from utils import restful
 import config
-from .forms import SignupForm,SigninForm,AddCommentForm
+from .forms import SignupForm,SigninForm,AddCommentForm,AddStarForm
 from .models import Student
-from ..models import Banner,Board,Course,Comment
+from ..models import Banner,Board,Course,Comment,Student_Course
 from .decorators import login_required
 
 
@@ -81,6 +81,37 @@ def add_comment():
             db.session.commit()
             return restful.success()
         else:
+            return restful.params_error('没有这门课程！')
+    else:
+        return restful.params_error(form.get_error())
+
+@bp.route('/astar/',methods=['POST'])
+@login_required
+def add_star():
+    form = AddStarForm(request.form)
+    if form.validate():
+        print("**************************")
+        index = form.index.data
+        course_id = form.course_id.data
+        student_id = g.student.id
+        course = Course.query.get(course_id)
+        if course:
+            #filter 加表名 用==  支持 order_by等复杂操作  filter_by 不加表名字 用==，简单用法
+            student_course = db.session.query(Student_Course).filter_by(student_id=student_id, course_id=course_id).first()
+            if student_course:
+                print("===================================")
+                print(student_course.student_id+" "+student_course.course_id)
+                student_course.star = index
+                db.session.commit()
+                return restful.success()
+            else:
+                print("新加入")
+                student_course_model = Student_Course(student_id=student_id, course_id=course_id,star=index)
+                db.session.add(student_course_model)
+                db.session.commit()
+                return restful.success()
+        else:
+            print("++++++++++++++++++++++++++++++")
             return restful.params_error('没有这门课程！')
     else:
         return restful.params_error(form.get_error())

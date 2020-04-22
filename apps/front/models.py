@@ -11,6 +11,8 @@ class Student(db.Model):
     _password = db.Column(db.String(100),nullable=False)
     join_time = db.Column(db.DateTime,default=datetime.now)
 
+    courses = db.relationship("Student_Course",back_populates="student")
+
     def __init__(self,*args,**kwargs):
         if 'password' in kwargs:
             self.password = kwargs.get('password')

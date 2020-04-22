@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block body %}
- <div class="lg-container">
+    <div class="lg-container">
         <div class="course-container">
             <h2>{{ course.title }}</h2>
             <p class="course-info-group">
@@ -33,7 +33,7 @@
                 {% for comment in course.comments %}
                     <li>
                         <div class="avatar-group">
-                            <img src="{{ comment.author.avatar or static('common/images/logo.png') }}" alt="">
+                            <img src="{{ comment.author.avatar or static('common/images/logo.jpg') }}" alt="">
                         </div>
                         <div class="comment-content">
                             <p class="author-info">
@@ -50,11 +50,28 @@
         </div>
         <div class="add-comment-group">
             <h3>发表评论</h3>
-            <script id="editor" type="text/plain" style="height:100px;"></script>
+            <script class="editor" id="editor" type="text/plain"></script>
             <div class="comment-btn-group">
                 <button class="btn btn-primary" id="comment-btn">发表评论</button>
             </div>
         </div>
     </div>
-    <div class="sm-container"></div>
+    <div class="sm-container">
+        <div id="starRating">
+            <p class="photo">
+                <span><i class="high"></i><i class="nohigh"></i></span>
+                <span><i class="high"></i><i class="nohigh"></i></span>
+                <span><i class="high"></i><i class="nohigh"></i></span>
+                <span><i class="high"></i><i class="nohigh"></i></span>
+                <span><i class="high"></i><i class="nohigh"></i></span>
+            </p>
+            <p class="starNum">请评分</p>
+            <div class="bottoms">
+                <a class="garyBtn cancleStar">取消评分</a><a class="blueBtn sureStar">确认</a>
+            </div>
+        </div>
+        <script>
+
+        </script>
+    </div>
 {% endblock %}

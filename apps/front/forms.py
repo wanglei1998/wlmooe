@@ -28,3 +28,9 @@ class SigninForm(BaseForm):
 class AddCommentForm(BaseForm):
     content = StringField(validators=[InputRequired(message='请输入评论内容！')])
     course_id = IntegerField(validators=[InputRequired(message='请输入课程id！')])
+
+class AddStarForm(BaseForm):
+    index = IntegerField()
+    course_id = IntegerField(validators=[InputRequired(message='请输入课程id！')])
+
+
