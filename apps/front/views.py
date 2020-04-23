@@ -29,11 +29,10 @@ def index():
         query_obj = Course.query.order_by(Course.create_time.desc())
     elif sort == 2:
         # 按照加精的时间倒叙排序
-        query_obj = Course.query.order_by(Course.create_time.desc())
-        #query_obj = db.session.query(Course).outerjoin(HighlightPostModel).order_by(HighlightPostModel.create_time.desc(),Course.create_time.desc())
+        query_obj = db.session.query(Course).order_by(Course.create_time.desc()).filter(Course.highlight==1)
     elif sort == 3:
-        # 按照点赞的数量排序
-        query_obj = Course.query.order_by(Course.create_time.desc())
+        # 按照点击量排序
+        query_obj = Course.query.order_by(Course.click.desc())
     elif sort == 4:
         # 按照评论的数量排序
         query_obj = db.session.query(Course).outerjoin(Comment).group_by(Course.id).order_by(func.count(Comment.id).desc(),Course.create_time.desc())
@@ -62,7 +61,10 @@ def course_detail(course_id):
     course = Course.query.get(course_id)
     if not course:
         abort(404)
-    return render_template('front/front_cdetail.html',course=course)
+    else:
+        course.click = course.click+1
+        db.session.commit()
+        return render_template('front/front_cdetail.html',course=course)
 
 
 @bp.route('/acomment/',methods=['POST'])

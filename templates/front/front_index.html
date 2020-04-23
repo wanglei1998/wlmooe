@@ -60,7 +60,7 @@
                     {% if current_sort==3 %}
                         <li class="active"><a href="{{ url_for("front.index",st=3,bd=current_board) }}">点赞最多</a></li>
                     {% else %}
-                        <li><a href="{{ url_for("front.index",st=3,bd=current_board) }}">点赞最多</a></li>
+                        <li><a href="{{ url_for("front.index",st=3,bd=current_board) }}">点击最多</a></li>
                     {% endif %}
                     {% if current_sort==4 %}
                         <li class="active"><a href="{{ url_for("front.index",st=4,bd=current_board) }}">评论最多</a></li>
@@ -78,14 +78,14 @@
                                 <p class="post-title">
                                     <a href="{{ url_for('front.course_detail',course_id=course.id) }}">{{ course.title }}</a>
                                     {% if course.highlight %}
-                                        <span class="label label-danger btn-xs">精华帖</span>
+                                        <span class="label label-danger btn-xs">精华课程</span>
                                     {% endif %}
                                 </p>
                                 <p class="course-info">
                                     <span>作者：{{ course.author.name }}</span>
                                     <span>发表时间：{{ course.create_time }}</span>
-                                    <span>评论：0</span>
-                                    <span>阅读：0</span>
+                                    {#<span>评论：0</span>#}
+                                    <span>阅读：{{ course.click }}</span>
                                 </p>
                             </div>
                         </li>

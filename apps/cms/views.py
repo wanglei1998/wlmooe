@@ -222,6 +222,36 @@ def dcourse():
     return restful.success()
 
 
+@bp.route('/hpost/',methods=['POST'])
+@login_required
+def hpost():
+    course_id = request.form.get("course_id")
+    if not course_id:
+        return restful.params_error('请传入课程id！')
+    course = Course.query.get(course_id)
+    if not course:
+        return restful.params_error("没有这门课程！")
+    else:
+        course.highlight = 1
+        db.session.commit()
+        return restful.success()
+
+
+@bp.route('/uhpost/',methods=['POST'])
+@login_required
+def uhpost():
+    course_id = request.form.get("course_id")
+    if not course_id:
+        return restful.params_error('请传入课程id！')
+    course = Course.query.get(course_id)
+    if not course:
+        return restful.params_error("没有这门课程！")
+    else:
+        course.highlight = 0
+        db.session.commit()
+        return restful.success()
+
+
 
 @bp.route('/comments/')
 @login_required
