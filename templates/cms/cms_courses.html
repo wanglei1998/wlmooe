@@ -25,7 +25,7 @@
                 <th>跳转链接</th>
                 <th>作者</th>
                 <th>创建时间</th>
-                <th>点击量</th>
+                <th>分类</th>
                 <th>操作</th>
             </tr>
         </thead>
@@ -41,7 +41,7 @@
                     </td>
                     <td>{{ course.author.username }}</td>
                     <td>{{ course.create_time }}</td>
-                    <td>{{ course.click }}</td>
+                    <td>{{ course.classification }}</td>
                     <td>
                         {% if course.highlight %}
                             <button class="btn btn-default btn-xs highlight-btn">取消加精</button>

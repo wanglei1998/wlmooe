@@ -8,7 +8,7 @@ from .forms import SignupForm,SigninForm,AddCommentForm,AddStarForm
 from .models import Student
 from ..models import Banner,Board,Course,Comment,Student_Course
 from .decorators import login_required
-
+from ..knn.knn import knn
 
 bp = Blueprint("front", __name__)
 
@@ -64,6 +64,19 @@ def course_detail(course_id):
     else:
         course.click = course.click+1
         db.session.commit()
+        click = course.click
+        sumStudent = Student_Course.query.filter(Student_Course.course_id==course.id).count()
+        sumStar = Student_Course.query.filter(Student_Course.course_id==course.id).all()
+        sum = 0
+        for star_demo in sumStar:
+            sum += star_demo.star
+        aveStar = 0;
+        if(sumStudent != 0):
+            aveStar = sum/sumStudent
+        classification = knn.courseclassTest([click,aveStar])
+        print(classification[0])
+        course.classification = classification[0]
+        db.session.commit()
         return render_template('front/front_cdetail.html',course=course)
 
 
@@ -92,7 +105,6 @@ def add_comment():
 def add_star():
     form = AddStarForm(request.form)
     if form.validate():
-        print("**************************")
         index = form.index.data
         course_id = form.course_id.data
         student_id = g.student.id
@@ -101,19 +113,30 @@ def add_star():
             #filter 加表名 用==  支持 order_by等复杂操作  filter_by 不加表名字 用==，简单用法
             student_course = db.session.query(Student_Course).filter_by(student_id=student_id, course_id=course_id).first()
             if student_course:
-                print("===================================")
                 print(student_course.student_id+" "+student_course.course_id)
                 student_course.star = index
                 db.session.commit()
-                return restful.success()
             else:
                 print("新加入")
                 student_course_model = Student_Course(student_id=student_id, course_id=course_id,star=index)
                 db.session.add(student_course_model)
                 db.session.commit()
-                return restful.success()
+            #分类更新
+            click = course.click
+            sumStudent = Student_Course.query.filter(Student_Course.course_id == course.id).count()
+            sumStar = Student_Course.query.filter(Student_Course.course_id == course.id).all()
+            sum = 0
+            for star_demo in sumStar:
+                sum += star_demo.star
+            aveStar = 0;
+            if (sumStudent != 0):
+                aveStar = sum / sumStudent
+            classification = knn.courseclassTest([click, aveStar])
+            print(classification[0])
+            course.classification = classification[0]
+            db.session.commit()
+            return restful.success()
         else:
-            print("++++++++++++++++++++++++++++++")
             return restful.params_error('没有这门课程！')
     else:
         return restful.params_error(form.get_error())

@@ -24,6 +24,7 @@ class Course(db.Model):
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text, nullable=False)
     click = db.Column(db.Integer,default=0)
+    classification = db.Column(db.String(20),default="未进行分类")
     highlight = db.Column(db.Integer,default=0)
     create_time = db.Column(db.DateTime, default=datetime.now)
     board_id = db.Column(db.Integer, db.ForeignKey("board.id"), nullable=False)
