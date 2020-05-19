@@ -68,6 +68,7 @@ def abanner():
         link_url = form.link_url.data
         priority = form.priority.data
         banner = Banner(name=name, image_url=image_url, link_url=link_url, priority=priority)
+        banner.author = g.teacher
         db.session.add(banner)
         db.session.commit()
         return restful.success()
@@ -128,7 +129,6 @@ def boards():
 def aboard():
     form = AddBoardForm(request.form)
     if form.validate():
-        name = form.name.data
         name = form.name.data
         board = Board(name=name)
         db.session.add(board)

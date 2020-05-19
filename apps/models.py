@@ -9,6 +9,9 @@ class Banner(db.Model):
     link_url = db.Column(db.String(255), nullable=False)
     priority = db.Column(db.Integer, default=0)
     create_time = db.Column(db.DateTime, default=datetime.now)
+    author_id = db.Column(db.Integer, db.ForeignKey("teacher.id"),nullable=False)
+
+    author = db.relationship("Teacher", backref='banners')
 
 
 class Board(db.Model):

@@ -20,8 +20,8 @@
                 <span>发表时间：{{ course.create_time }}</span>
                 <span>作者：{{ course.author.username }}</span>
                 <span>所属板块：{{ course.board.name }}</span>
-                <span>阅读数：{{ course.read_count }}</span>
-                <span>评论数：0</span>
+                <span>阅读数：{{ course.click }}</span>
+                <span>评论数：{{ course.comments | length }}</span>
             </p>
             <article class="course-content" id="course-content" data-id="{{ course.id }}">
                 {{ course.content|safe }}
